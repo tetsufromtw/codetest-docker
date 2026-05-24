@@ -9,6 +9,11 @@ services:
     ports:
       - 3306:3306
     hostname: db
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
   app:
     build:
@@ -16,3 +21,6 @@ services:
       dockerfile: app/Dockerfile
     ports:
       - 8888:8888
+    depends_on:
+      db:
+        condition: service_healthy
